@@ -147,8 +147,8 @@ const view = new SceneView({
 });
 ```
 
-
 To see the div element that contains the map, we should change the `height` to `100%`:
+
 ```css
 html,
 body,
@@ -157,4 +157,101 @@ body,
   padding: 0;
   height: 100%;
 }
+```
+
+## Step 3: Add location points as GeoJSON
+
+We can add data in GeoJSON format as a FeatureLayer.
+
+First, create a `data` folder and add the file with the locations there. I added  [locations.json](./data/locations.json).
+
+Each point in the file has `properties` and `geometry`. For example, this is the point corresponding to "Taipei":
+
+```js
+{
+  "properties": {
+    "country": "Taiwan",
+    "location": "Taipei"
+  },
+  "geometry": {
+    "coordinates": [
+      121.3,
+      25.03
+    ],
+    "type": "Point"
+  }
+}
+```
+
+When adding points from a GeoJSON to a FeatureLayer, there are several steps that we need to make:
+
+### Load the file
+
+You can use `esri/request` to load files:
+
+```ts
+const dataUrl = "./data/locations.json";
+
+function getData() {
+  return esriRequest(dataUrl, {
+    responseType: "json"
+  });
+}
+```
+
+### Generate graphics from the loaded points
+
+```ts
+function createGraphics(response: esri.RequestResponse) {
+  const geoJson = response.data;
+  return geoJson.features.map((feature: any, i: number) => {
+    return {
+      geometry: new Point({
+        x: feature.geometry.coordinates[0],
+        y: feature.geometry.coordinates[1]
+      }),
+      attributes: {
+        ObjectID: i,
+        location: feature.properties.city
+      }
+    };
+  });
+}
+```
+
+### Create a FeatureLayer using the generated graphics
+
+```ts
+
+const fields = ...;
+const renderer = ...;
+const labelingInfo = ...;
+
+function getLayer(source: esri.Collection<esri.Graphic>) {
+
+  const layer = new FeatureLayer({
+    source,
+    fields,
+    objectIdField: "ObjectID",
+    renderer,
+    labelingInfo,
+    screenSizePerspectiveEnabled: false
+  });
+
+  return layer;
+}
+```
+
+Because this is an asynchronous process as we need to load the data in the beginning, we use promises to let us know when the data is loaded. We will chain all these steps, so that they get executed only after the data is loaded.
+
+```ts
+// we need to wait for the view to be ready
+view.when(() => {
+  getData()
+    .then(getGraphics)
+    .then(getLayer)
+    .then((layer) => {
+      map.add(layer);
+    });
+  });
 ```
