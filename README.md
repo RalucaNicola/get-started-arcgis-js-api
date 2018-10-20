@@ -258,7 +258,7 @@ view.when(() => {
 
 ## Step 4 - some more styling
 
-In this step we're going to change the basemap and make the background color transparent.
+In this step we're going to change the basemap and make the background color transparent. In the end we will also add a title and labels for our locations.
 
 ### Add a vector tile layer basemap
 
@@ -321,4 +321,31 @@ To remove the navigation widgets I usually just remove everything in the `view.u
 
 ```js
 view.ui.empty("top-left");
+```
+
+### Some final changes: Add labels and a title
+
+I picked a font for the map from [Google Fonts](https://fonts.google.com/) and now I'll add the labels and a title.
+
+For the labels, all you need to do is set the labelingInfo on the FeatureLayer:
+
+```ts
+const labelingInfo = [
+  new LabelClass({
+    labelExpressionInfo: { expression: "$feature.location" },
+    symbol: new LabelSymbol3D ({
+      symbolLayers: [ new TextSymbol3DLayer({
+        material: { color: "#333" },
+        size: 10,
+        font: {
+          weight: "bold"
+        },
+        halo: {
+          color: "white",
+          size: 1
+        }
+      })]
+    })
+  })
+];
 ```

@@ -5,7 +5,8 @@ import FeatureLayer from "esri/layers/FeatureLayer";
 import VectorTileLayer from "esri/layers/VectorTileLayer";
 import { Point } from "esri/geometry";
 import UniqueValueRenderer from "esri/renderers/UniqueValueRenderer";
-import { PointSymbol3D, ObjectSymbol3DLayer } from "esri/symbols";
+import { PointSymbol3D, ObjectSymbol3DLayer, LabelSymbol3D, TextSymbol3DLayer } from "esri/symbols";
+import LabelClass = require("esri/layers/support/LabelClass");
 import Basemap from "esri/Basemap";
 
 import esriRequest = require("esri/request");
@@ -95,7 +96,7 @@ function getGraphics(response: esri.RequestResponse) {
       }),
       attributes: {
         ObjectID: i,
-        location: feature.properties.city
+        location: feature.properties.location
       }
     };
   });
@@ -146,13 +147,34 @@ const renderer = new UniqueValueRenderer({
   uniqueValueInfos: uniqueValueInfos
 });
 
+const labelingInfo = [
+  new LabelClass({
+    labelExpressionInfo: { expression: "$feature.location" },
+    symbol: new LabelSymbol3D ({
+      symbolLayers: [ new TextSymbol3DLayer({
+        material: { color: "#333" },
+        size: 10,
+        font: {
+          weight: "bold"
+        },
+        halo: {
+          color: "white",
+          size: 1
+        }
+      })]
+    })
+  })
+];
+
+
 function getLayer(source: esri.Collection<esri.Graphic>) {
 
   const layer = new FeatureLayer({
     source,
     fields,
     renderer: renderer,
-    objectIdField: "ObjectID"
+    objectIdField: "ObjectID",
+    labelingInfo
   });
 
   return layer;

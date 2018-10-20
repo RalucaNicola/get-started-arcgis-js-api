@@ -1,7 +1,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/FeatureLayer", "esri/layers/VectorTileLayer", "esri/geometry", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/Basemap", "esri/request"], function (require, exports, Map_1, SceneView_1, FeatureLayer_1, VectorTileLayer_1, geometry_1, UniqueValueRenderer_1, symbols_1, Basemap_1, esriRequest) {
+define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/FeatureLayer", "esri/layers/VectorTileLayer", "esri/geometry", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/layers/support/LabelClass", "esri/Basemap", "esri/request"], function (require, exports, Map_1, SceneView_1, FeatureLayer_1, VectorTileLayer_1, geometry_1, UniqueValueRenderer_1, symbols_1, LabelClass, Basemap_1, esriRequest) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Map_1 = __importDefault(Map_1);
@@ -83,7 +83,7 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
                 }),
                 attributes: {
                     ObjectID: i,
-                    location: feature.properties.city
+                    location: feature.properties.location
                 }
             };
         });
@@ -128,12 +128,31 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
         valueExpression: "$feature.ObjectID % " + colorPalette.length,
         uniqueValueInfos: uniqueValueInfos
     });
+    var labelingInfo = [
+        new LabelClass({
+            labelExpressionInfo: { expression: "$feature.location" },
+            symbol: new symbols_1.LabelSymbol3D({
+                symbolLayers: [new symbols_1.TextSymbol3DLayer({
+                        material: { color: "#333" },
+                        size: 10,
+                        font: {
+                            weight: "bold"
+                        },
+                        halo: {
+                            color: "white",
+                            size: 1
+                        }
+                    })]
+            })
+        })
+    ];
     function getLayer(source) {
         var layer = new FeatureLayer_1.default({
             source: source,
             fields: fields,
             renderer: renderer,
-            objectIdField: "ObjectID"
+            objectIdField: "ObjectID",
+            labelingInfo: labelingInfo
         });
         return layer;
     }
