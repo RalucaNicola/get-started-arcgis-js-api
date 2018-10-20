@@ -116,3 +116,15 @@ Change the `scripts` property to the following:
   "start": "npm-run-all --parallel watch:build watch:server"
 }
 ```
+
+### Add repository to GitHub (optional step)
+
+This is optional, but it's useful to have a backup of your code and also to deploy the app at the end using GitHub Pages.
+
+Go to [GitHub](https://github.com/) and create an account if you don't have one yet.
+Create a new repository (don't create a Readme file) and then push the local repository to the remote one:
+
+```
+git remote add origin https://github.com/your-username/your-app-name.git
+git push -u origin master
+```
