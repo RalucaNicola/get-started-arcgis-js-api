@@ -349,3 +349,8 @@ const labelingInfo = [
   })
 ];
 ```
+
+## Step 5 - Deploy your website to GitHub
+
+[Here](https://pages.github.com/) is a step by step tutorial on how to do this. Basically you need to go to the Settings tab in your repository, scroll down to GitHub Pages, choose the master branch as a source and hit Save.
+You can check my project at [https://ralucanicola.github.io/get-started-arcgis-js-api/](https://ralucanicola.github.io/get-started-arcgis-js-api/.).
