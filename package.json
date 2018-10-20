@@ -1,0 +1,21 @@
+{
+  "name": "get-started-arcgis-js-api",
+  "version": "1.0.0",
+  "description": "A web app and tutorial to get started with 3D web visualizations using ArcGIS API for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "3D",
+    "tutorial",
+    "web",
+    "beginner",
+    "ArcGIS",
+    "API",
+    "for",
+    "JavaScript"
+  ],
+  "author": "Raluca Nicola",
+  "license": "MIT"
+}
