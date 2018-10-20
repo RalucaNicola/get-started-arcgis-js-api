@@ -297,3 +297,28 @@ getBaseLayer()
     });
   });
 ```
+
+### Change background color
+
+Ok, let's get rid of the realistic dark space behind our globe so that we can see the web page background. This all happens in the [environment](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#environment) of the view.
+
+First we need to enable transparency on the view by setting [alphaCompositingEnabled](https://developers.arcgis.com/javascript/latest/api-reference/esri-views-SceneView.html#alphaCompositingEnabled) to `true`.
+
+Next we want to set the background of the view to be transparent. As the view background is behind the stars and the atmosphere we also need to remove them:
+
+```js
+environment: {
+  background: {
+    type: "color",
+    color: [0, 0, 0, 0]
+  },
+  starsEnabled: false,
+  atmosphereEnabled: false
+}
+```
+
+To remove the navigation widgets I usually just remove everything in the `view.ui` in the top left corner like this:
+
+```js
+view.ui.empty("top-left");
+```

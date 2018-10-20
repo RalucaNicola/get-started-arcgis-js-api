@@ -41,9 +41,34 @@ getBaseLayer()
 
 const view = new SceneView({
   map,
-  container: "viewDiv"
+  container: "viewDiv",
+  alphaCompositingEnabled: true,
+  camera: {
+    position: {
+      spatialReference: {
+        wkid: 4326
+      },
+      x: 94.28248677690586,
+      y: 21.553684553226123,
+      z: 25000000
+    },
+    heading: 0,
+    tilt: 0.12089379039103153
+  },
+  environment: {
+    background: {
+      type: "color",
+      color: [0, 0, 0, 0]
+    },
+    lighting: {
+      date: "Sun Jul 15 2018 15:30:00 GMT+0900 (W. Europe Daylight Time)"
+    },
+    starsEnabled: false,
+    atmosphereEnabled: false
+  }
 });
 
+view.ui.empty("top-left");
 
 // Step 3: Add location points as GeoJSON
 
