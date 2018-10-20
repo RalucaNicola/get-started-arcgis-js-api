@@ -21,3 +21,11 @@ node_modules/*
 .DS_Store
 ```
 to exclude them from `git`.
+
+## Set up app structure
+
+Create an `index.html` file and an `app` folder that will store the JS/TS code and a style folder that will store the CSS.
+
+- index.html
+- app -> main.js
+- style -> main.css
