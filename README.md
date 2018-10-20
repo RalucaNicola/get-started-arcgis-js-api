@@ -74,3 +74,24 @@ Add a script in `package.json` to watch for changes and compile everytime a `.ts
 You can find a detailed description of this step [here](https://developers.arcgis.com/javascript/latest/guide/typescript-setup/index.html).
 
 To test this, change `main.js` file to `main.ts` and run `npm run tsc`. This will compile the files and watch for changes.
+
+### Set up a linter for TypeScript
+
+Install the tool needed for linting:
+
+`npm install --save-dev tslint`
+
+You can read more about the tool [here](https://palantir.github.io/tslint/).
+Set up the linting rules in a `tslint.json` file. The rules that I use in this project are the ones that we also use when developing the API:
+https://github.com/Esri/jsapi-resources/blob/master/4.x/typescript/demo/tslint.json.
+
+Copy the `tslint.json` file in the root of the project and create a script to run the command from the command lint:
+
+```js
+  "scripts": {
+    ...,
+    "lint": "tslint app/**/*.ts"
+  },
+```
+
+You can run this command if you want to check for syntax errors in your code.
