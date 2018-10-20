@@ -95,3 +95,24 @@ Copy the `tslint.json` file in the root of the project and create a script to ru
 ```
 
 You can run this command if you want to check for syntax errors in your code.
+
+### Set up a local web server
+
+Install `browser-sync` to set up a web server. This will also listen for changes and reload the page:
+
+`npm install --save-dev browser-sync`
+
+Install `npm-run-all` to have the web server watch for changes in parallel to the typescript compiler.
+
+`npm install --save-dev npm-run-all`
+
+Change the `scripts` property to the following:
+
+```js
+"scripts": {
+  "watch:build": "tsc -w",
+  "watch:server": "browser-sync start --server -w",
+  "lint": "tslint app/**/*.ts",
+  "start": "npm-run-all --parallel watch:build watch:server"
+}
+```
