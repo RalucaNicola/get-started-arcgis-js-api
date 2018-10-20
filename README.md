@@ -128,3 +128,33 @@ Create a new repository (don't create a Readme file) and then push the local rep
 git remote add origin https://github.com/your-username/your-app-name.git
 git push -u origin master
 ```
+
+## Step 2: Create a globe
+
+In this step we'll add a 3D map to our project. So let's create a `Map` and render it in a `SceneView`:
+
+```ts
+import Map from "esri/Map";
+import SceneView from "esri/views/SceneView";
+
+const map = new Map({
+  basemap: "topo"
+});
+
+const view = new SceneView({
+  map,
+  container: "viewDiv"
+});
+```
+
+
+To see the div element that contains the map, we should change the `height` to `100%`:
+```css
+html,
+body,
+#viewDiv {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+```
