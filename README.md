@@ -22,10 +22,55 @@ node_modules/*
 ```
 to exclude them from `git`.
 
-## Set up app structure
+### Set up app structure
 
 Create an `index.html` file and an `app` folder that will store the JS/TS code and a style folder that will store the CSS.
 
 - index.html
 - app -> main.js
 - style -> main.css
+
+### Set up TypeScript
+
+```
+npm install --save-dev typescript
+npm install --save @types/arcgis-js-api
+```
+
+Add `tsconfig.json` file with the following configuration:
+
+```js
+{
+  "compilerOptions": {
+    "module": "amd",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "jsx": "react",
+    "jsxFactory": "tsx",
+    "target": "es5",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "include": [
+    "./app/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+```
+
+Add a script in `package.json` to watch for changes and compile everytime a `.ts` file changes:
+
+```js
+  ...,
+  "scripts": {
+    "tsc": "tsc -w" // compiles and watches for changes
+  },
+```
+
+You can find a detailed description of this step [here](https://developers.arcgis.com/javascript/latest/guide/typescript-setup/index.html).
+
+To test this, change `main.js` file to `main.ts` and run `npm run tsc`. This will compile the files and watch for changes.
