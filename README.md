@@ -255,3 +255,45 @@ view.when(() => {
     });
   });
 ```
+
+## Step 4 - some more styling
+
+In this step we're going to change the basemap and make the background color transparent.
+
+### Add a vector tile layer basemap
+
+Many vector tile layer have unique styles and are really creative. Have a look at this [group](https://www.arcgis.com/home/group.html?id=30de8da907d240a0bccd5ad3ff25ef4a) for inspiration. I like [this layer](http://www.arcgis.com/home/item.html?id=1c365daf37a744fbad748b67aa69dac8), it reminds me of a school atlas and I think those pins would fit well on this basemap.
+When I add a vector tile layer to a 3D map, most of the times I remove the labels because draped labels don't really make much sense. So what I do, is [download the style](https://www.arcgis.com/sharing/rest/content/items/1c365daf37a744fbad748b67aa69dac8/resources/styles/root.json?f=pjson) of the vector tile layer and then I modify and load it with the API. You can see the modified version [here](./data/basemap-style.json).
+
+This is the code that I use to create a basemap from a vector tile layer with a style hosted locally:
+
+```ts
+
+// change the map declaration to have a white ground color and no basemap
+const map = new Map({
+  ground: {
+    surfaceColor: "#fff"
+  }
+});
+
+// define vector tile layer and load the style
+function getBaseLayer() {
+  const baseLayer = new VectorTileLayer({
+    url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
+  });
+
+  return esriRequest("./data/basemap-style.json")
+    .then((result) => {
+      baseLayer.loadStyle(result.data);
+      return baseLayer;
+    });
+}
+
+// once the style is loaded, set the VTL as the base layer
+getBaseLayer()
+  .then((baseLayer) => {
+    map.basemap = new Basemap({
+      baseLayers: [baseLayer]
+    });
+  });
+```

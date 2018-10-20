@@ -1,16 +1,36 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/FeatureLayer", "esri/geometry", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/request"], function (require, exports, Map_1, SceneView_1, FeatureLayer_1, geometry_1, UniqueValueRenderer_1, symbols_1, esriRequest) {
+define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/FeatureLayer", "esri/layers/VectorTileLayer", "esri/geometry", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/Basemap", "esri/request"], function (require, exports, Map_1, SceneView_1, FeatureLayer_1, VectorTileLayer_1, geometry_1, UniqueValueRenderer_1, symbols_1, Basemap_1, esriRequest) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Map_1 = __importDefault(Map_1);
     SceneView_1 = __importDefault(SceneView_1);
     FeatureLayer_1 = __importDefault(FeatureLayer_1);
+    VectorTileLayer_1 = __importDefault(VectorTileLayer_1);
     UniqueValueRenderer_1 = __importDefault(UniqueValueRenderer_1);
+    Basemap_1 = __importDefault(Basemap_1);
     var dataUrl = "./data/locations.json";
     var map = new Map_1.default({
-        basemap: "topo"
+        ground: {
+            surfaceColor: "#fff"
+        }
+    });
+    function getBaseLayer() {
+        var baseLayer = new VectorTileLayer_1.default({
+            url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
+        });
+        return esriRequest("./data/basemap-style.json")
+            .then(function (result) {
+            baseLayer.loadStyle(result.data);
+            return baseLayer;
+        });
+    }
+    getBaseLayer()
+        .then(function (baseLayer) {
+        map.basemap = new Basemap_1.default({
+            baseLayers: [baseLayer]
+        });
     });
     var view = new SceneView_1.default({
         map: map,

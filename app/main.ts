@@ -2,9 +2,11 @@ import Map from "esri/Map";
 import SceneView from "esri/views/SceneView";
 
 import FeatureLayer from "esri/layers/FeatureLayer";
+import VectorTileLayer from "esri/layers/VectorTileLayer";
 import { Point } from "esri/geometry";
 import UniqueValueRenderer from "esri/renderers/UniqueValueRenderer";
 import { PointSymbol3D, ObjectSymbol3DLayer } from "esri/symbols";
+import Basemap from "esri/Basemap";
 
 import esriRequest = require("esri/request");
 import esri = __esri;
@@ -12,8 +14,30 @@ import esri = __esri;
 const dataUrl = "./data/locations.json";
 
 const map = new Map({
-  basemap: "topo"
+  ground: {
+    surfaceColor: "#fff"
+  }
 });
+
+function getBaseLayer() {
+
+  const baseLayer = new VectorTileLayer({
+    url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
+  });
+
+  return esriRequest("./data/basemap-style.json")
+    .then((result) => {
+      baseLayer.loadStyle(result.data);
+      return baseLayer;
+    });
+}
+
+getBaseLayer()
+  .then((baseLayer) => {
+    map.basemap = new Basemap({
+      baseLayers: [baseLayer]
+    });
+  });
 
 const view = new SceneView({
   map,
