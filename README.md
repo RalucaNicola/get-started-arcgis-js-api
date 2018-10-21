@@ -6,7 +6,7 @@ In this tutorial you'll learn how to create a globe visualization of places you'
 
 For this tutorial you'll need to have the data in [geojson](http://geojson.org/) format and like all things web, make sure to have `node` and `git` installed. It's useful if you have a [GitHub account](https://github.com/) so that we can host the code there and deploy it at the end on [GitHub Pages](https://pages.github.com/).
 
-## Step 1: Set up the projet and development environment
+## Step 1: Set up the project and development environment
 
 ### Set up your project
 
