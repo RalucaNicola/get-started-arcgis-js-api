@@ -11,6 +11,7 @@ If you want to skip the tutorial and create your own globe just by replacing the
 - clone this repo: `git clone https://github.com/RalucaNicola/get-started-arcgis-js-api.git`
 - go to the folder: `cd get-started-arcgis-js-api`
 - remove any references to the original repository: `rm -rf .git`
+- install dependencies: `npm install`
 - start watching for changes by running `npm run start` in the console
 - replace your data by changing the [locations.json](./data/locations.json) file with your own GeoJSON. You can create a GeoJSON of your locations with the [geojson.io web-app](http://geojson.io/).
 - make any other changes you want to the app (tweak title, font, colors etc.)
