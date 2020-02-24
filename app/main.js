@@ -20,14 +20,12 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
         var baseLayer = new VectorTileLayer_1.default({
             url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
         });
-        return esriRequest("./data/basemap-style.json")
-            .then(function (result) {
+        return esriRequest("./data/basemap-style.json").then(function (result) {
             baseLayer.loadStyle(result.data);
             return baseLayer;
         });
     }
-    getBaseLayer()
-        .then(function (baseLayer) {
+    getBaseLayer().then(function (baseLayer) {
         map.basemap = new Basemap_1.default({
             baseLayers: [baseLayer]
         });
@@ -88,7 +86,8 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
             };
         });
     }
-    var fields = [{
+    var fields = [
+        {
             name: "ObjectID",
             alias: "ObjectID",
             type: "oid"
@@ -97,20 +96,38 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
             name: "location",
             alias: "location",
             type: "string"
-        }];
-    var colorPalette = ["#FFFFFF", "#F78D99", "#ffc700", "#27004D", "#005892", "#E5211D", "#198E2B", "#f4a142", "#fc8879", "#fcec78", "#8de8b1", "#8dcfe8", "#8d8ee8", "#c88de8"];
+        }
+    ];
+    var colorPalette = [
+        "#FFFFFF",
+        "#F78D99",
+        "#ffc700",
+        "#27004D",
+        "#005892",
+        "#E5211D",
+        "#198E2B",
+        "#f4a142",
+        "#fc8879",
+        "#fcec78",
+        "#8de8b1",
+        "#8dcfe8",
+        "#8d8ee8",
+        "#c88de8"
+    ];
     var uniqueValueInfos = colorPalette.map(function (color, index) {
         return {
             value: index,
             symbol: new symbols_1.PointSymbol3D({
-                symbolLayers: [new symbols_1.ObjectSymbol3DLayer({
+                symbolLayers: [
+                    new symbols_1.ObjectSymbol3DLayer({
                         material: {
                             color: color
                         },
                         height: 150000,
                         width: 150000,
                         resource: { primitive: "sphere" }
-                    })],
+                    })
+                ],
                 verticalOffset: {
                     screenLength: 40,
                     maxWorldLength: 10000000,
@@ -132,7 +149,8 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
         new LabelClass({
             labelExpressionInfo: { expression: "$feature.location" },
             symbol: new symbols_1.LabelSymbol3D({
-                symbolLayers: [new symbols_1.TextSymbol3DLayer({
+                symbolLayers: [
+                    new symbols_1.TextSymbol3DLayer({
                         material: { color: "#333" },
                         size: 10,
                         font: {
@@ -142,7 +160,8 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
                             color: "white",
                             size: 1
                         }
-                    })]
+                    })
+                ]
             })
         })
     ];

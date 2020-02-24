@@ -21,24 +21,21 @@ const map = new Map({
 });
 
 function getBaseLayer() {
-
   const baseLayer = new VectorTileLayer({
     url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
   });
 
-  return esriRequest("./data/basemap-style.json")
-    .then((result) => {
-      baseLayer.loadStyle(result.data);
-      return baseLayer;
-    });
+  return esriRequest("./data/basemap-style.json").then(result => {
+    baseLayer.loadStyle(result.data);
+    return baseLayer;
+  });
 }
 
-getBaseLayer()
-  .then((baseLayer) => {
-    map.basemap = new Basemap({
-      baseLayers: [baseLayer]
-    });
+getBaseLayer().then(baseLayer => {
+  map.basemap = new Basemap({
+    baseLayers: [baseLayer]
   });
+});
 
 const view = new SceneView({
   map,
@@ -76,7 +73,7 @@ view.ui.empty("top-left");
 getData()
   .then(getGraphics)
   .then(getLayer)
-  .then((layer) => {
+  .then(layer => {
     map.add(layer);
   });
 
@@ -102,32 +99,50 @@ function getGraphics(response: esri.RequestResponse) {
   });
 }
 
+const fields = [
+  {
+    name: "ObjectID",
+    alias: "ObjectID",
+    type: "oid"
+  },
+  {
+    name: "location",
+    alias: "location",
+    type: "string"
+  }
+];
 
-const fields = [{
-  name: "ObjectID",
-  alias: "ObjectID",
-  type: "oid"
-},
-{
-  name: "location",
-  alias: "location",
-  type: "string"
-}];
-
-const colorPalette = ["#FFFFFF", "#F78D99", "#ffc700", "#27004D", "#005892", "#E5211D", "#198E2B", "#f4a142", "#fc8879", "#fcec78", "#8de8b1", "#8dcfe8", "#8d8ee8", "#c88de8"];
+const colorPalette = [
+  "#FFFFFF",
+  "#F78D99",
+  "#ffc700",
+  "#27004D",
+  "#005892",
+  "#E5211D",
+  "#198E2B",
+  "#f4a142",
+  "#fc8879",
+  "#fcec78",
+  "#8de8b1",
+  "#8dcfe8",
+  "#8d8ee8",
+  "#c88de8"
+];
 
 const uniqueValueInfos = colorPalette.map((color: string, index: number) => {
   return {
     value: index,
     symbol: new PointSymbol3D({
-      symbolLayers: [new ObjectSymbol3DLayer({
-        material: {
-          color: color
-        },
-        height: 150000,
-        width: 150000,
-        resource: { primitive: "sphere" }
-      })],
+      symbolLayers: [
+        new ObjectSymbol3DLayer({
+          material: {
+            color: color
+          },
+          height: 150000,
+          width: 150000,
+          resource: { primitive: "sphere" }
+        })
+      ],
       verticalOffset: {
         screenLength: 40,
         maxWorldLength: 10000000,
@@ -150,25 +165,25 @@ const renderer = new UniqueValueRenderer({
 const labelingInfo = [
   new LabelClass({
     labelExpressionInfo: { expression: "$feature.location" },
-    symbol: new LabelSymbol3D ({
-      symbolLayers: [ new TextSymbol3DLayer({
-        material: { color: "#333" },
-        size: 10,
-        font: {
-          weight: "bold"
-        },
-        halo: {
-          color: "white",
-          size: 1
-        }
-      })]
+    symbol: new LabelSymbol3D({
+      symbolLayers: [
+        new TextSymbol3DLayer({
+          material: { color: "#333" },
+          size: 10,
+          font: {
+            weight: "bold"
+          },
+          halo: {
+            color: "white",
+            size: 1
+          }
+        })
+      ]
     })
   })
 ];
 
-
 function getLayer(source: esri.Collection<esri.Graphic>) {
-
   const layer = new FeatureLayer({
     source,
     fields,
