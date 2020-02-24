@@ -41,6 +41,7 @@ const view = new SceneView({
   map,
   container: "viewDiv",
   alphaCompositingEnabled: true,
+  qualityProfile: "high",
   camera: {
     position: {
       spatialReference: {

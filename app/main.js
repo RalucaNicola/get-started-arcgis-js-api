@@ -34,6 +34,7 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
         map: map,
         container: "viewDiv",
         alphaCompositingEnabled: true,
+        qualityProfile: "high",
         camera: {
             position: {
                 spatialReference: {
