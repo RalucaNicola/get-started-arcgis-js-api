@@ -28,6 +28,6 @@
     "typescript": "^3.8.2"
   },
   "dependencies": {
-    "@types/arcgis-js-api": "^4.9.0"
+    "@types/arcgis-js-api": "^4.14.0"
   }
 }
