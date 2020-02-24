@@ -1,16 +1,14 @@
 import Map from "esri/Map";
 import SceneView from "esri/views/SceneView";
 
-import FeatureLayer from "esri/layers/FeatureLayer";
 import VectorTileLayer from "esri/layers/VectorTileLayer";
-import { Point } from "esri/geometry";
 import UniqueValueRenderer from "esri/renderers/UniqueValueRenderer";
 import { PointSymbol3D, ObjectSymbol3DLayer, LabelSymbol3D, TextSymbol3DLayer } from "esri/symbols";
 import LabelClass = require("esri/layers/support/LabelClass");
 import Basemap from "esri/Basemap";
 
 import esriRequest = require("esri/request");
-import esri = __esri;
+import GeoJSONLayer from "esri/layers/GeoJSONLayer";
 
 const dataUrl = "./data/locations.json";
 
@@ -44,15 +42,12 @@ const view = new SceneView({
   qualityProfile: "high",
   camera: {
     position: {
-      spatialReference: {
-        wkid: 4326
-      },
-      x: 94.28248677690586,
-      y: 21.553684553226123,
-      z: 25000000
+      x: 86.66458348,
+      y: 27.28839772,
+      z: 20135210.66583
     },
-    heading: 0,
-    tilt: 0.12089379039103153
+    heading: 359.98,
+    tilt: 0.15
   },
   environment: {
     background: {
@@ -70,48 +65,6 @@ const view = new SceneView({
 view.ui.empty("top-left");
 
 // Step 3: Add location points as GeoJSON
-
-getData()
-  .then(getGraphics)
-  .then(getLayer)
-  .then(layer => {
-    map.add(layer);
-  });
-
-function getData() {
-  return esriRequest(dataUrl, {
-    responseType: "json"
-  });
-}
-
-function getGraphics(response: esri.RequestResponse) {
-  const geoJson = response.data;
-  return geoJson.features.map((feature: any, i: number) => {
-    return {
-      geometry: new Point({
-        x: feature.geometry.coordinates[0],
-        y: feature.geometry.coordinates[1]
-      }),
-      attributes: {
-        ObjectID: i,
-        location: feature.properties.location
-      }
-    };
-  });
-}
-
-const fields = [
-  {
-    name: "ObjectID",
-    alias: "ObjectID",
-    type: "oid"
-  },
-  {
-    name: "location",
-    alias: "location",
-    type: "string"
-  }
-];
 
 const colorPalette = [
   "#FFFFFF",
@@ -171,9 +124,6 @@ const labelingInfo = [
         new TextSymbol3DLayer({
           material: { color: "#333" },
           size: 10,
-          font: {
-            weight: "bold"
-          },
           halo: {
             color: "white",
             size: 1
@@ -184,14 +134,10 @@ const labelingInfo = [
   })
 ];
 
-function getLayer(source: esri.Collection<esri.Graphic>) {
-  const layer = new FeatureLayer({
-    source,
-    fields,
-    renderer: renderer,
-    objectIdField: "ObjectID",
-    labelingInfo
-  });
+const locationsLayer = new GeoJSONLayer({
+  url: dataUrl,
+  renderer,
+  labelingInfo
+});
 
-  return layer;
-}
+map.add(locationsLayer);

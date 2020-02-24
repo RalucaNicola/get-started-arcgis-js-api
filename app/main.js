@@ -1,15 +1,15 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/FeatureLayer", "esri/layers/VectorTileLayer", "esri/geometry", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/layers/support/LabelClass", "esri/Basemap", "esri/request"], function (require, exports, Map_1, SceneView_1, FeatureLayer_1, VectorTileLayer_1, geometry_1, UniqueValueRenderer_1, symbols_1, LabelClass, Basemap_1, esriRequest) {
+define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/VectorTileLayer", "esri/renderers/UniqueValueRenderer", "esri/symbols", "esri/layers/support/LabelClass", "esri/Basemap", "esri/request", "esri/layers/GeoJSONLayer"], function (require, exports, Map_1, SceneView_1, VectorTileLayer_1, UniqueValueRenderer_1, symbols_1, LabelClass, Basemap_1, esriRequest, GeoJSONLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Map_1 = __importDefault(Map_1);
     SceneView_1 = __importDefault(SceneView_1);
-    FeatureLayer_1 = __importDefault(FeatureLayer_1);
     VectorTileLayer_1 = __importDefault(VectorTileLayer_1);
     UniqueValueRenderer_1 = __importDefault(UniqueValueRenderer_1);
     Basemap_1 = __importDefault(Basemap_1);
+    GeoJSONLayer_1 = __importDefault(GeoJSONLayer_1);
     var dataUrl = "./data/locations.json";
     var map = new Map_1.default({
         ground: {
@@ -37,15 +37,12 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
         qualityProfile: "high",
         camera: {
             position: {
-                spatialReference: {
-                    wkid: 4326
-                },
-                x: 94.28248677690586,
-                y: 21.553684553226123,
-                z: 25000000
+                x: 86.66458348,
+                y: 27.28839772,
+                z: 20135210.66583
             },
-            heading: 0,
-            tilt: 0.12089379039103153
+            heading: 359.98,
+            tilt: 0.15
         },
         environment: {
             background: {
@@ -61,44 +58,6 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
     });
     view.ui.empty("top-left");
     // Step 3: Add location points as GeoJSON
-    getData()
-        .then(getGraphics)
-        .then(getLayer)
-        .then(function (layer) {
-        map.add(layer);
-    });
-    function getData() {
-        return esriRequest(dataUrl, {
-            responseType: "json"
-        });
-    }
-    function getGraphics(response) {
-        var geoJson = response.data;
-        return geoJson.features.map(function (feature, i) {
-            return {
-                geometry: new geometry_1.Point({
-                    x: feature.geometry.coordinates[0],
-                    y: feature.geometry.coordinates[1]
-                }),
-                attributes: {
-                    ObjectID: i,
-                    location: feature.properties.location
-                }
-            };
-        });
-    }
-    var fields = [
-        {
-            name: "ObjectID",
-            alias: "ObjectID",
-            type: "oid"
-        },
-        {
-            name: "location",
-            alias: "location",
-            type: "string"
-        }
-    ];
     var colorPalette = [
         "#FFFFFF",
         "#F78D99",
@@ -154,9 +113,6 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
                     new symbols_1.TextSymbol3DLayer({
                         material: { color: "#333" },
                         size: 10,
-                        font: {
-                            weight: "bold"
-                        },
                         halo: {
                             color: "white",
                             size: 1
@@ -166,15 +122,11 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/F
             })
         })
     ];
-    function getLayer(source) {
-        var layer = new FeatureLayer_1.default({
-            source: source,
-            fields: fields,
-            renderer: renderer,
-            objectIdField: "ObjectID",
-            labelingInfo: labelingInfo
-        });
-        return layer;
-    }
+    var locationsLayer = new GeoJSONLayer_1.default({
+        url: dataUrl,
+        renderer: renderer,
+        labelingInfo: labelingInfo
+    });
+    map.add(locationsLayer);
 });
 //# sourceMappingURL=main.js.map
