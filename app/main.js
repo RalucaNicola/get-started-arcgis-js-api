@@ -113,6 +113,9 @@ define(["require", "exports", "esri/Map", "esri/views/SceneView", "esri/layers/V
                     new symbols_1.TextSymbol3DLayer({
                         material: { color: "#333" },
                         size: 10,
+                        font: {
+                            family: "Permanent Marker"
+                        },
                         halo: {
                             color: "white",
                             size: 1

@@ -16,10 +16,12 @@ This will generate a `package.json` file.
 ### Set up a git repo
 
 In the terminal run `git init` in the root folder. Create a `.gitignore` file and add
+
 ```
 node_modules/*
 .DS_Store
 ```
+
 to exclude them from `git`.
 
 ### Set up app structure
@@ -161,9 +163,9 @@ body,
 
 ## Step 3: Add location points as GeoJSON
 
-We can add data in GeoJSON format as a FeatureLayer.
+We can add data in GeoJSON format as a [GeoJSONLayer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GeoJSONLayer.html).
 
-First, create a `data` folder and add the file with the locations there. I added  [locations.json](./data/locations.json).
+First, create a `data` folder and add the file with the locations there. I added [locations.json](./data/locations.json).
 
 Each point in the file has `properties` and `geometry`. For example, this is the point corresponding to "Taipei":
 
@@ -183,77 +185,70 @@ Each point in the file has `properties` and `geometry`. For example, this is the
 }
 ```
 
-When adding points from a GeoJSON to a FeatureLayer, there are several steps that we need to make:
+Adding the layer then is pretty straight-forward:
 
-### Load the file
+```js
+const locationsLayer = new GeoJSONLayer({
+  url: dataUrl,
+  renderer,
+  labelingInfo
+});
 
-You can use `esri/request` to load files:
-
-```ts
-const dataUrl = "./data/locations.json";
-
-function getData() {
-  return esriRequest(dataUrl, {
-    responseType: "json"
-  });
-}
+map.add(locationsLayer);
 ```
 
-### Generate graphics from the loaded points
+The layer has a UniqueValueRenderer to display each point with a different color. The colors are randomly assigned based on the ObjectID of the features.
 
-```ts
-function createGraphics(response: esri.RequestResponse) {
-  const geoJson = response.data;
-  return geoJson.features.map((feature: any, i: number) => {
-    return {
-      geometry: new Point({
-        x: feature.geometry.coordinates[0],
-        y: feature.geometry.coordinates[1]
-      }),
-      attributes: {
-        ObjectID: i,
-        location: feature.properties.city
+```js
+const colorPalette = [
+  "#FFFFFF",
+  "#F78D99",
+  "#ffc700",
+  "#27004D",
+  "#005892",
+  "#E5211D",
+  "#198E2B",
+  "#f4a142",
+  "#fc8879",
+  "#fcec78",
+  "#8de8b1",
+  "#8dcfe8",
+  "#8d8ee8",
+  "#c88de8"
+];
+
+const uniqueValueInfos = colorPalette.map((color: string, index: number) => {
+  return {
+    value: index,
+    symbol: new PointSymbol3D({
+      symbolLayers: [
+        new ObjectSymbol3DLayer({
+          material: {
+            color: color
+          },
+          height: 150000,
+          width: 150000,
+          resource: { primitive: "sphere" }
+        })
+      ],
+      verticalOffset: {
+        screenLength: 40,
+        maxWorldLength: 10000000,
+        minWorldLength: 10000
+      },
+      callout: {
+        type: "line", // autocasts as new LineCallout3D()
+        size: 1.5,
+        color: "#555"
       }
-    };
-  });
-}
-```
+    })
+  };
+});
 
-### Create a FeatureLayer using the generated graphics
-
-```ts
-
-const fields = ...;
-const renderer = ...;
-const labelingInfo = ...;
-
-function getLayer(source: esri.Collection<esri.Graphic>) {
-
-  const layer = new FeatureLayer({
-    source,
-    fields,
-    objectIdField: "ObjectID",
-    renderer,
-    labelingInfo,
-    screenSizePerspectiveEnabled: false
-  });
-
-  return layer;
-}
-```
-
-Because this is an asynchronous process as we need to load the data in the beginning, we use promises to let us know when the data is loaded. We will chain all these steps, so that they get executed only after the data is loaded.
-
-```ts
-// we need to wait for the view to be ready
-view.when(() => {
-  getData()
-    .then(getGraphics)
-    .then(getLayer)
-    .then((layer) => {
-      map.add(layer);
-    });
-  });
+const renderer = new UniqueValueRenderer({
+  valueExpression: `$feature.ObjectID % ${colorPalette.length}`,
+  uniqueValueInfos: uniqueValueInfos
+});
 ```
 
 ## Step 4 - some more styling
@@ -268,7 +263,6 @@ When I add a vector tile layer to a 3D map, most of the times I remove the label
 This is the code that I use to create a basemap from a vector tile layer with a style hosted locally:
 
 ```ts
-
 // change the map declaration to have a white ground color and no basemap
 const map = new Map({
   ground: {
@@ -282,20 +276,18 @@ function getBaseLayer() {
     url: "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer"
   });
 
-  return esriRequest("./data/basemap-style.json")
-    .then((result) => {
-      baseLayer.loadStyle(result.data);
-      return baseLayer;
-    });
+  return esriRequest("./data/basemap-style.json").then(result => {
+    baseLayer.loadStyle(result.data);
+    return baseLayer;
+  });
 }
 
 // once the style is loaded, set the VTL as the base layer
-getBaseLayer()
-  .then((baseLayer) => {
-    map.basemap = new Basemap({
-      baseLayers: [baseLayer]
-    });
+getBaseLayer().then(baseLayer => {
+  map.basemap = new Basemap({
+    baseLayers: [baseLayer]
   });
+});
 ```
 
 ### Change background color
@@ -333,18 +325,20 @@ For the labels, all you need to do is set the labelingInfo on the FeatureLayer:
 const labelingInfo = [
   new LabelClass({
     labelExpressionInfo: { expression: "$feature.location" },
-    symbol: new LabelSymbol3D ({
-      symbolLayers: [ new TextSymbol3DLayer({
-        material: { color: "#333" },
-        size: 10,
-        font: {
-          weight: "bold"
-        },
-        halo: {
-          color: "white",
-          size: 1
-        }
-      })]
+    symbol: new LabelSymbol3D({
+      symbolLayers: [
+        new TextSymbol3DLayer({
+          material: { color: "#333" },
+          size: 10,
+          font: {
+            family: "Permanent Marker"
+          },
+          halo: {
+            color: "white",
+            size: 1
+          }
+        })
+      ]
     })
   })
 ];

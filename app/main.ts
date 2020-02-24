@@ -124,6 +124,9 @@ const labelingInfo = [
         new TextSymbol3DLayer({
           material: { color: "#333" },
           size: 10,
+          font: {
+            family: "Permanent Marker"
+          },
           halo: {
             color: "white",
             size: 1
