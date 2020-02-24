@@ -4,7 +4,27 @@ In this tutorial you'll learn how to create a globe visualization of places you'
 
 ![screenshot](./images/screenshot.png)
 
-For this tutorial you'll need to have the data in [geojson](http://geojson.org/) format and like all things web, make sure to have `node` and `git` installed. It's useful if you have a [GitHub account](https://github.com/) so that we can host the code there and deploy it at the end on [GitHub Pages](https://pages.github.com/).
+---
+
+If you want to skip the tutorial and create your own globe just by replacing the data, do this:
+
+- clone this repo: `git clone https://github.com/RalucaNicola/get-started-arcgis-js-api.git`
+- go to the folder: `cd get-started-arcgis-js-api`
+- remove any references to the original repository: `rm -rf .git`
+- start watching for changes by running `npm run start` in the console
+- replace your data by changing the [locations.json](./data/locations.json) file with your own GeoJSON. You can create a GeoJSON of your locations with the [geojson.io web-app](http://geojson.io/).
+- make any other changes you want to the app (tweak title, font, colors etc.)
+- when you are done, stop the server with Ctrl/Cmd-C
+- ready to deploy the app? now you can copy it on your web-server or you can deploy it on GitHub:
+  - run `git init` to initialize the repository
+  - add all the files to the repo: `git add .`
+  - make your first commit: `git commit -m "initial commit"`
+  - create a repository on GitHub and connect it to the local repo: `git remote add origin https://github.com/your-username/your-app-name.git`; `git push -u origin master`
+  - go to the Settings tab in your repository, scroll down to GitHub Pages, choose the master branch as a source and hit Save.
+
+---
+
+For those who want to follow the detailed tutorial on how to create this from scratch, you'll need to have the data in [geojson](http://geojson.org/) format and like all things web, make sure to have `node` and `git` installed. It's useful if you have a [GitHub account](https://github.com/) so you can host the code there and deploy it in the end on [GitHub Pages](https://pages.github.com/). P.S. This is a nice web-app, if you want to create geojson data: http://geojson.io/.
 
 ## Step 1: Set up the project and development environment
 
