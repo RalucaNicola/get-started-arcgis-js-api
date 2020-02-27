@@ -2,7 +2,7 @@
 
 In this tutorial you'll learn how to create a globe visualization of places you've been to. Something like this pin globe (the style is all up to you, you can get creative and style it totally different):
 
-![screenshot](./images/screenshot.png)
+[![screenshot](./images/screenshot.png "Click to see app in action")](https://ralucanicola.github.io/get-started-arcgis-js-api/)
 
 ---
 
